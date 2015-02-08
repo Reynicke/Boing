@@ -1,0 +1,13 @@
+{
+    "name":            "img_server",
+    "description":     "YOUR PROJECT DESCRIPTION HERE",
+    "author":          "Andreas Trost <ndrs.trst@gmail.com>",
+    "version":         "0.0.1",
+    "dependencies":    {
+        "node-static": "0.7.6",
+        "gm":   "1.17.0"
+                       
+    },
+    "devDependencies": {
+    }
+}
