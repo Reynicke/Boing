@@ -48,7 +48,7 @@ function process(request, response) {
     gmImage.apply(srcFilePath, requestData)
         .write(targetFile, function(err) {
             if (err) {
-                return console.dir(arguments);
+                send500();                return console.dir(arguments);
             }
                        
             console.log(targetFile + " created  ::  " + arguments[3]);
@@ -81,6 +81,12 @@ function findSourceFile(imageId) {
 
 function send404(response, msg) {
     msg = msg || '404 Not Found';
+    response.writeHeader(404, {"Content-Type": "text/plain"});
+    response.end(msg + "\n");
+}
+
+function send500(response, msg) {
+    msg = msg || '500 Internal Server Error';
     response.writeHeader(404, {"Content-Type": "text/plain"});
     response.end(msg + "\n");
 }

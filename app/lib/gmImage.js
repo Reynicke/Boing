@@ -15,6 +15,17 @@ gmImage = {
             magick.resize(data['height'])
         }
         
+        if (data['extent'] == 'center' && data['width'] && data['height']) {
+            magick.gravity('Center');
+            magick.extent(data['width'], data['height']);
+        }
+        
+        if (data['extentColor']) {
+            magick.background("#" + data['extentColor']);
+        }
+        
+        
+        
         return magick;
     }
 };
