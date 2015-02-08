@@ -2,7 +2,7 @@ var gm = require('gm').subClass({'imageMagick': true});
 
 gmImage = {
     apply: function(srcFile, data) {
-        var magick = gm(srcFile);
+        var magick = gm(srcFile).noProfile();
         
         // apply width and height
         if (data['width'] && data['height']) {

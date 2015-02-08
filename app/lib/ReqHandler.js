@@ -92,7 +92,6 @@ function send500(response, msg) {
 }
 
 function sendRedirect(response, url) {
-    console.log('redirect', url)
     response.writeHead(302, {
         'Location': url
     });
