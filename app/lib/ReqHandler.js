@@ -1,9 +1,11 @@
 var fs = require('fs'),
     path = require('path'),
     mkdirp = require('mkdirp'),
-    gm = require('gm').subClass({'imageMagick': true}),
+    gmImage = require('./gmImage'),
     BoingRequest = require('./BoingRequest'),
     settings = require('./../settings').settings;
+
+console.log(gmImage)
 
 
 var blacklist = ['/favicon.ico'],
@@ -15,6 +17,7 @@ var blacklist = ['/favicon.ico'],
  * @param response
  */
 function process(request, response) {
+    
     if (blacklist.indexOf(request.originalRequest.url) != -1) {
         response.end();
         return;
@@ -39,21 +42,23 @@ function process(request, response) {
     // Manipulate and save source file
     var requestData = request.match.data; 
     var targetFile = settings.cacheDir + request.originalRequest.url;
-    gm(srcFilePath)
-        .resize(requestData['width'], requestData['height'])
+    
+    console.log(requestData)
+    
+    gmImage.apply(srcFilePath, requestData)
         .write(targetFile, function(err) {
-           if (err) {
-               return console.dir(arguments);
-           }
-           console.log(targetFile + " created  ::  " + arguments[3]);
-
-           // Redirect to load original url
-           response.writeHead(302, {
-               'Location': request.originalRequest.url
-           });
-           response.end();
-       }
-    );
+            if (err) {
+                return console.dir(arguments);
+            }
+                       
+            console.log(targetFile + " created  ::  " + arguments[3]);
+    
+            // Redirect to load original url
+            response.writeHead(302, {
+                'Location': request.originalRequest.url
+            });
+            response.end();
+    });
 }
 
 function findSourceFile(imageId) {
