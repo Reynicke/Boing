@@ -5,7 +5,8 @@
     "version":         "0.0.1",
     "dependencies":    {
         "node-static": "0.7.6",
-        "gm":   "1.17.0"
+        "gm":   "1.17.0",
+        "mkdirp": "*"
                        
     },
     "devDependencies": {

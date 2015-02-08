@@ -13,25 +13,3 @@ require('http').createServer(function (request, response) {
         }
     });
 }).listen(settings.server.port);
-
-/*var http = require('http'),
-    settings = require('./settings').settings,
-    reqHandler = require('./ReqHandler'),
-    gm = require('gm').subClass({'imageMagick': true});
-
-
-
-var server = http.createServer(reqHandler.process);
-server.listen(settings.server.port);
-
-console.log("Server is listening");*/
-/*
-
-gm(config.imgDir + 'chalet.jpg')
-    .monochrome()
-    .write(config.cacheDir + 'out.png', function(err){
-               if (err) return console.dir(arguments)
-               console.log(this.outname + " created  ::  " + arguments[3])
-           }
-);
-    */

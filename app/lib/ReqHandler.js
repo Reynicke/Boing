@@ -1,10 +1,13 @@
 var fs = require('fs'),
+    path = require('path'),
+    mkdirp = require('mkdirp'),
+    gm = require('gm').subClass({'imageMagick': true}),
     BoingRequest = require('./BoingRequest'),
     settings = require('./../settings').settings;
 
 
 var blacklist = ['/favicon.ico'],
-    fileTypes = ['jpg', 'png', 'gif'];
+    fileTypes = ['png', 'jpg', 'gif'];
 
 /**
  * 
@@ -25,51 +28,61 @@ function process(request, response) {
     console.info(request.match.data)
     
     // Find source file
-    var reqData = request.match.data;
-    var fileSrc = settings.imgDir + reqData.imgId + '.' + reqData.fileType;
-    fs.exists(fileSrc, function(exists) {
-        console.log(exists, fileSrc);
+    var srcFilePath = findSourceFile(request.match.data['imgId']); 
+    if (!srcFilePath) {
+        send404(response, 'id not found');
+        return;
+    }
 
-        if (exists) {
-            fs.readFile(fileSrc, function(error, content) {
-                if (error) {
-                    response.writeHead(500);
-                    response.end();
-                }
-                else {
-                    response.writeHead(200, { 'Content-Type': 'image/' + 'jpeg' });
-                    response.end(content, 'utf-8');
-                }
-            });
-        }
-        else {
-            send404(response);
-        }
-    });
+    prepareCacheDir(request.originalRequest.url);
     
-    // Manipulate source file
-    
-    // Save source file
-    
-    // Deliver source file
+    // Manipulate and save source file
+    var requestData = request.match.data; 
+    var targetFile = settings.cacheDir + request.originalRequest.url;
+    gm(srcFilePath)
+        .resize(requestData['width'], requestData['height'])
+        .write(targetFile, function(err) {
+           if (err) {
+               return console.dir(arguments);
+           }
+           console.log(targetFile + " created  ::  " + arguments[3]);
+
+           // Redirect to load original url
+           response.writeHead(302, {
+               'Location': request.originalRequest.url
+           });
+           response.end();
+       }
+    );
 }
 
-function send404(response) {
-    response.writeHeader(404, {"Content-Type": "text/plain"});
-    response.end("404 Not Found\n");
-}
-
-
-
-
-function checkFile(path) {
+function findSourceFile(imageId) {
+    // Check files with different types in root image dir
+    var possibleFiles = [];
     fileTypes.forEach(function(fileType) {
-        var testUrl = path + '.' + fileType;
-        console.log(testUrl)
-        fs.exists(testUrl, function(exists) {
-            console.log(exists, testUrl);
-        });
+        possibleFiles.push( settings.imgDir + imageId + '.' + fileType );
     });
+    
+    var i, fileSrc;
+    for(i = 0; i < possibleFiles.length; i++) {
+        fileSrc = possibleFiles[i];
+        if (fs.existsSync(fileSrc)) {
+            return fileSrc;
+        }
+    }
+    
+    return null;
+}
+
+function send404(response, msg) {
+    msg = msg || '404 Not Found';
+    response.writeHeader(404, {"Content-Type": "text/plain"});
+    response.end(msg + "\n");
+}
+
+function prepareCacheDir(dir) {
+    var targetDir = settings.cacheDir + path.parse(dir).dir;
+    mkdirp.sync(targetDir);
 }
 
 exports.process = process;
