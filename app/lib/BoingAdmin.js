@@ -4,7 +4,7 @@ var fs = require('fs'),
     settings = require('./../settings').settings;
 
 /**
- *
+ * Handle admin requests 
  * @param {BoingRequest} request
  * @param callback
  */
@@ -25,8 +25,9 @@ function handle(request, callback) {
 AdminMethods = {
     clearCache: function(params, callback) {
         var rmdir = require('rimraf');
-        rmdir(settings.cacheDir, function() {
-            callback(true);
+        rmdir(settings.cacheDir, function(status) {
+            if (!status) status = 'ok';
+            callback(status);
         });
     }
 };

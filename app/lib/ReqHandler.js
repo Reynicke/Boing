@@ -27,11 +27,11 @@ function process(request, response) {
     if (request.type === BoingRequest.TYPE_ADMIN) {
         BoingAdmin.handle(request, function(result) {
             if (result === false) {
-                sendAdminError();
+                sendAdminError(response);
             }
             else {
                 response.writeHeader(200, {"Content-Type": "text/plain"});
-                response.end("ok\n");
+                response.end(result + "\n");
             }
         });
         return;
