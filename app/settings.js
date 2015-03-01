@@ -25,7 +25,8 @@ var settings = {
     },
     
     static: {
-        srcDir: './src_files/static/'
+        srcDir: './src_files/static/',
+        targetDir: 'static'
     },
     
     admin: {
