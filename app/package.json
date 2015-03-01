@@ -1,6 +1,6 @@
 {
-    "name":            "img_server",
-    "description":     "YOUR PROJECT DESCRIPTION HERE",
+    "name":            "Boing File Server",
+    "description":     "flexible file server for node specialized on serving images",
     "author":          "Andreas Trost <ndrs.trst@gmail.com>",
     "version":         "0.0.1",
     "dependencies":    {

@@ -6,7 +6,7 @@ var settings = {
     cacheDir: './cache/',
 
     image: {
-        srcDir: './static_img/',
+        srcDir: './src_files/image/',
            
         /**
          * Available variables in pattern:
@@ -20,12 +20,12 @@ var settings = {
         requestPatterns: [
             '/img/<width>/<height>/<imgId>.<fileType>',
             '/complex/<width>/<height>/<imgId>-<extent>_<extentColor>.<fileType>',
-            '/<width>/<height>/<imgId>--<sometext>.<fileType>'
+            '/<width>x<height>/<imgId>--<sometext>.<fileType>'
         ]
     },
     
     static: {
-            
+        srcDir: './src_files/static/'
     },
     
     admin: {
