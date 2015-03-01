@@ -1,3 +1,6 @@
+module.exports.process = process;
+
+
 var fs = require('fs'),
     path = require('path'),
     mkdirp = require('mkdirp'),
@@ -144,6 +147,3 @@ var progressQueue = {
     }
     
 };
-
-exports.process = process;
-

@@ -1,24 +1,26 @@
+module.exports.handle = handle;
+
 var fs = require('fs'),
     settings = require('./../settings').settings;
 
 /**
  *
  * @param {BoingRequest} request
- * @param response
+ * @param callback
  */
-module.exports.handle = handle = function(request, callback) {
+function handle(request, callback) {
     var method = request.match.data.method;
     var params = request.match.data.params;
 
     if (method in AdminMethods) {
         console.info('ADMIN: ' + method + ' ' + params);
-        return AdminMethods[method](params, callback);
+        AdminMethods[method](params, callback);
     }
     else {
         callback(false);
     }
     
-};
+}
 
 AdminMethods = {
     clearCache: function(params, callback) {

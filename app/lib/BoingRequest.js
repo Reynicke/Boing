@@ -1,3 +1,5 @@
+module.exports = BoingRequest;
+
 var settings = require('./../settings').settings;
 
 // Define request types
@@ -63,5 +65,3 @@ function BoingRequest(request) {
     
     this.setFile();
 }
-
-module.exports = exports = BoingRequest;
