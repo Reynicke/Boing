@@ -3,6 +3,7 @@ var fs = require('fs'),
     mkdirp = require('mkdirp'),
     gmImage = require('./gmImage'),
     BoingRequest = require('./BoingRequest'),
+    BoingAdmin = require('./BoingAdmin'),
     settings = require('./../settings').settings;
 
 var blacklist = ['/favicon.ico'],
@@ -19,13 +20,26 @@ function process(request, response) {
         response.end();
         return;
     }
+    
+    if (request.type === BoingRequest.TYPE_ADMIN) {
+        BoingAdmin.handle(request, function(result) {
+            if (result === false) {
+                sendAdminError();
+            }
+            else {
+                response.writeHeader(200, {"Content-Type": "text/plain"});
+                response.end("ok\n");
+            }
+        });
+        return;
+    }
 
     if (!request.match) {
         send404(response);
         return;
     }
     
-    //console.info(request.match.data)
+    console.info(request.match.data)
     
     // Find source file
     var srcFilePath = findSourceFile(request.match.data['imgId']); 
@@ -65,7 +79,7 @@ function findSourceFile(imageId) {
     // Check files with different types in root image dir
     var possibleFiles = [];
     fileTypes.forEach(function(fileType) {
-        possibleFiles.push( settings.imgDir + imageId + '.' + fileType );
+        possibleFiles.push( settings.image.srcDir + imageId + '.' + fileType );
     });
     
     var i, fileSrc;
@@ -77,6 +91,11 @@ function findSourceFile(imageId) {
     }
     
     return null;
+}
+
+function prepareCacheDir(dir) {
+    var targetDir = settings.cacheDir + path.parse(dir).dir;
+    mkdirp.sync(targetDir);
 }
 
 function send404(response, msg) {
@@ -91,6 +110,10 @@ function send500(response, msg) {
     response.end(msg + "\n");
 }
 
+function sendAdminError(response) {
+    send404(response, 'ERROR');
+}
+
 function sendRedirect(response, url) {
     response.writeHead(302, {
         'Location': url
@@ -102,11 +125,6 @@ function sendWait(response, url) {
     setTimeout(function() {
         sendRedirect(response, url);
     }, 2000);
-}
-
-function prepareCacheDir(dir) {
-    var targetDir = settings.cacheDir + path.parse(dir).dir;
-    mkdirp.sync(targetDir);
 }
 
 var progressQueue = {

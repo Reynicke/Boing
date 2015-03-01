@@ -1,5 +1,9 @@
 var settings = require('./../settings').settings;
 
+// Define request types
+BoingRequest.TYPE_IMAGE = 'image';
+BoingRequest.TYPE_ADMIN = 'admin';
+
 function BoingRequest(request) {
     this.match = {
         'route': '',
@@ -9,13 +13,14 @@ function BoingRequest(request) {
     };
 
     this.originalRequest = request;
-    this.patterns = settings.requestPatterns;
-
-    this.matchRoutes = function() {
+    this.type = null;
+    
+    this.matchRoutes = function(patterns, type) {
         var index,
             requestUrl = this.originalRequest.url;
-        for (index in this.patterns) {
-            var reqPattern = this.patterns[index],
+        
+        for (index in patterns) {
+            var reqPattern = patterns[index],
                 regexVariables = /<[^>]*>/g,
                 variablesInPattern = reqPattern.match(regexVariables);
             var regexRouteStr = reqPattern.replace('.', '\\.');                 // escape dots
@@ -37,11 +42,13 @@ function BoingRequest(request) {
                 }
 
                 this.match = result;
-                return;
+                this.type = type;
+                return true;
             }
         }
 
         this.match = null;
+        return false;
     };
 
     this.setFile = function() {
@@ -50,7 +57,10 @@ function BoingRequest(request) {
         }
     };
 
-    this.matchRoutes();
+    if (!this.matchRoutes(settings.image.requestPatterns, BoingRequest.TYPE_IMAGE)) {
+        this.matchRoutes(settings.admin.requestPatterns, BoingRequest.TYPE_ADMIN)
+    }
+    
     this.setFile();
 }
 

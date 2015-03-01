@@ -6,8 +6,8 @@
     "dependencies":    {
         "node-static": "0.7.6",
         "gm":   "1.17.0",
-        "mkdirp": "*"
-                       
+        "mkdirp": "*",
+        "rimraf": "*"                      
     },
     "devDependencies": {
     }
