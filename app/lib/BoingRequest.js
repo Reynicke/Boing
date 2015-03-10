@@ -19,11 +19,20 @@ function BoingRequest(request) {
     
     this.matchRoutes = function(patterns, type) {
         var index,
+            preset,
             requestUrl = this.originalRequest.url;
         
         for (index in patterns) {
-            var reqPattern = patterns[index],
-                regexVariables = /<[^>]*>/g,
+            var reqPattern = patterns[index];
+            
+            // Check if pattern is string or a defined preset
+            if (typeof(reqPattern) == 'object' && 'pattern' in reqPattern && 'preset' in reqPattern) {
+                preset = reqPattern;
+                reqPattern = preset.pattern;
+                var options = preset.preset;
+            }
+
+            var regexVariables = /<[^>]*>/g,
                 variablesInPattern = reqPattern.match(regexVariables);
             var regexRouteStr = reqPattern.replace('.', '\\.');                 // escape dots
             regexRouteStr = regexRouteStr.replace(regexVariables, '(.*)');      // replace variables through valid regex
@@ -38,6 +47,16 @@ function BoingRequest(request) {
                     'pattern': reqPattern,
                     'data': {}
                 };
+                
+                // Check if we have preset data
+                if (preset) {
+                    // Apply options from preset
+                    for (var prop in options) {
+                        result['data'][prop] = options[prop];
+                    }
+                }
+                
+                // Apply options from URL
                 for (var i = 0; i < variablesInPattern.length; i++) {
                     var cleanVariableName = variablesInPattern[i].replace(/[<|>]/g, '');
                     result['data'][cleanVariableName] = match[i+1];
@@ -59,6 +78,8 @@ function BoingRequest(request) {
         }
     };
 
+    
+    ///////// Constructor start ////////////
     if (!this.matchRoutes(settings.image.requestPatterns, BoingRequest.TYPE_IMAGE)) {
         this.matchRoutes(settings.admin.requestPatterns, BoingRequest.TYPE_ADMIN)
     }

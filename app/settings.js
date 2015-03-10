@@ -10,7 +10,7 @@ var settings = {
            
         /**
          * Available variables in pattern:
-         * - imgId (required)       some string
+         * - imgId (required)       name of image in srcDir (without extension)
          * - fileType (required)    png | jpg | gif
          * - width                  int in px
          * - height                 int in px
@@ -20,7 +20,15 @@ var settings = {
         requestPatterns: [
             '/img/<width>/<height>/<imgId>.<fileType>',
             '/complex/<width>/<height>/<imgId>-<extent>_<extentColor>.<fileType>',
-            '/<width>x<height>/<imgId>--<sometext>.<fileType>'
+            '/<width>x<height>/<imgId>--<sometext>.<fileType>',
+            {
+                pattern: '/preset1/<imgId>.<fileType>',
+                preset: {
+                     width: 500,
+                     height: 500,
+                     extent: 'center'
+                }
+            }
         ]
     },
     
