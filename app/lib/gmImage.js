@@ -23,6 +23,9 @@ gmImage = {
         if (data['extentColor']) {
             magick.background("#" + data['extentColor']);
         }
+
+        var quality = data['jpgQuality'] || 60;
+        magick.quality(quality);
         
         
         

@@ -17,13 +17,14 @@ var settings = {
          * - fileType (required)    png | jpg | gif
          * - width                  int in px
          * - height                 int in px
+         * - jpgQuality             int, default = 60
          * - extent                 center | no (use with height + width)
          * - extentColor            hexadecimal color, e.g. ffffff (use with extent)
          */
         requestPatterns: [
             '/img/<width>/<height>/<imgId>.<fileType>',
             '/complex/<width>/<height>/<imgId>-<extent>_<extentColor>.<fileType>',
-            '/<width>x<height>/<imgId>--<sometext>.<fileType>',
+            '/<width>x<height>/<jpgQuality>/<imgId>--<sometext>.<fileType>',
             {
                 pattern: '/preset1/<imgId>.<fileType>',
                 preset: {
