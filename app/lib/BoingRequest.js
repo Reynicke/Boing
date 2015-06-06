@@ -32,6 +32,7 @@ function BoingRequest(request) {
                 var options = preset.preset;
             }
 
+            // Prepare Regex for matching 
             var regexVariables = /<[^>]*>/g,
                 variablesInPattern = reqPattern.match(regexVariables);
             var regexRouteStr = reqPattern.replace('.', '\\.');                 // escape dots

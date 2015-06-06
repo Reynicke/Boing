@@ -7,7 +7,8 @@ var fs = require('fs'),
     gmImage = require('./gmImage'),
     BoingRequest = require('./BoingRequest'),
     BoingAdmin = require('./BoingAdmin'),
-    settings = require('./../settings').settings;
+    settings = require('./../settings').settings,
+    Logger = require('./Logger');
 
 var blacklist = ['/favicon.ico'],
     fileTypes = ['png', 'jpg', 'gif'];
@@ -38,7 +39,7 @@ function process(request, response) {
     }
 
     if (!request.match) {
-        send404(response);
+        send404(response, null, request.originalRequest.url);
         return;
     }
     
@@ -47,7 +48,7 @@ function process(request, response) {
     // Find source file
     var srcFilePath = findSourceFile(request.match.data['imgId']); 
     if (!srcFilePath) {
-        send404(response, 'id not found');
+        send404(response, 'id not found', request.originalRequest.url);
         return;
     }
 
@@ -101,23 +102,26 @@ function prepareCacheDir(dir) {
     mkdirp.sync(targetDir);
 }
 
-function send404(response, msg) {
+function send404(response, msg, url) {
+    Logger.logAccess(400, url);
     msg = msg || '404 Not Found';
     response.writeHeader(404, {"Content-Type": "text/plain"});
     response.end(msg + "\n");
 }
 
-function send500(response, msg) {
+function send500(response, msg, url) {
+    Logger.logAccess(500, url);
     msg = msg || '500 Internal Server Error';
-    response.writeHeader(404, {"Content-Type": "text/plain"});
+    response.writeHeader(500, {"Content-Type": "text/plain"});
     response.end(msg + "\n");
 }
 
 function sendAdminError(response) {
-    send404(response, 'ERROR');
+    send404(response, 'ERROR', 'admin');
 }
 
 function sendRedirect(response, url) {
+    Logger.logAccess(302, url);
     response.writeHead(302, {
         'Location': url
     });

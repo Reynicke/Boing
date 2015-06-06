@@ -4,6 +4,9 @@ var settings = {
     },
 
     cacheDir: './cache/',
+    logs: {
+          access: './logs/access.log'
+    },
 
     image: {
         srcDir: './src_files/image/',
